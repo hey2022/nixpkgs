@@ -194,6 +194,7 @@ buildFHSEnv {
     if [[ ''${XMODIFIERS} =~ fcitx ]]; then
       export QT_IM_MODULE=fcitx
       export GTK_IM_MODULE=fcitx
+      export SDL_IM_MODULE=fcitx
     elif [[ ''${XMODIFIERS} =~ ibus ]]; then
       export QT_IM_MODULE=ibus
       export GTK_IM_MODULE=ibus
