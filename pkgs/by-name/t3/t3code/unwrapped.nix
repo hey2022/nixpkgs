@@ -252,6 +252,7 @@ stdenv.mkDerivation (
         _0x4bs3nt
         iamanaws
         qweered
+        hey2022
       ];
       mainProgram = "t3code-desktop";
       inherit (nodejs.meta) platforms;
