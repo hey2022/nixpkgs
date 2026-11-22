@@ -2,8 +2,10 @@
   lib,
   callPackage,
   cloudflared,
+  stdenv,
   symlinkJoin,
   makeBinaryWrapper,
+  enableBrowser ? false,
   enableAzureDevOps ? false,
   azure-cli,
   azure-cli-extensions,
@@ -33,6 +35,8 @@
 }:
 
 let
+  browser = callPackage ./browser.nix { };
+
   runtimePackages =
     lib.optionals enableAzureDevOps [
       (azure-cli.withExtensions [ azure-cli-extensions.azure-devops ])
@@ -65,6 +69,12 @@ let
       "T3CODE_CLOUDFLARED_PATH"
       (lib.getExe cloudflared)
     ]
+    # The server and browser setup both need to resolve the same store executable.
+    ++ lib.optionals enableBrowser [
+      "--set-default"
+      "T3CODE_SERVER_BROWSER_EXECUTABLE"
+      (lib.getExe browser)
+    ]
     ++ lib.optionals enableResourceMonitor [
       "--set-default"
       "T3CODE_RESOURCE_MONITOR_PATH"
@@ -72,6 +82,9 @@ let
     ];
 
 in
+assert lib.assertMsg (
+  !enableBrowser || lib.meta.availableOn stdenv.hostPlatform browser
+) "t3code: enableBrowser is only supported on x86_64-linux and aarch64-linux";
 symlinkJoin {
   pname = "t3code";
   inherit (t3code-unwrapped) version;

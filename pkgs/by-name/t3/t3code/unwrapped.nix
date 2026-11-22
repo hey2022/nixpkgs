@@ -54,6 +54,9 @@ stdenv.mkDerivation (
       hash = "sha256-QPZpT/1zm5sLIDw3AOzUCIrmOFPwUU8jP/q1A8GzLow=";
     };
 
+    # T3 normally downloads Chrome on first use. Let the wrapper supply a store path.
+    patches = [ ./browser-executable.patch ];
+
     postPatch = ''
       substituteInPlace apps/web/vite.config.ts \
         --replace-fail 'const host = explicitHost || "localhost";' \
